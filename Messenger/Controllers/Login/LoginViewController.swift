@@ -43,7 +43,7 @@ class LoginViewController: UIViewController {
         field.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 12, height: 0))
         field.leftViewMode = .always
         field.backgroundColor = .white
-        field.isSecureTextEntry = true
+//        field.isSecureTextEntry = true
         return field
     }()
 
@@ -104,7 +104,16 @@ class LoginViewController: UIViewController {
             return
         }
         // Firebase login
-        
+        FirebaseAuth.Auth.auth().signIn(withEmail: email, password: password) { [weak self] authResult, error in
+            guard let self = self else { return }
+            guard let result = authResult, error == nil else {
+                print("Failed to log in user with email: \(email)")
+                return
+            }
+            let user = result.user
+            print("Logged In user: \(user)")
+            self.navigationController?.dismiss(animated: true, completion: nil)
+        }
     }
 
     private func alertUserLoginError() {
